@@ -56,9 +56,12 @@ io.on('connection', (socket) => {
   socket.on('join-video-room',async ({roomId,userid})=>{
     const roomName = `VIDEO:${roomId}`
     console.log(roomName)
-    socket.join(roomName)
+    socket.join(roomId)
     console.log(`user id in server is 58 is ${userid}`)
-    socket.to(roomName).broadcast.emit('user-video-connected', userid)
+    socket.broadcast.emit('user-video-connected', userid)
+    socket.on('disconnect', () => {
+      socket.broadcast.emit('user-video-disconnected', userid)
+  })
   })
   socket.on('CODE_CHANGED', async (code) => {
     const { roomId, username } = await client.hGetAll(socket.id)

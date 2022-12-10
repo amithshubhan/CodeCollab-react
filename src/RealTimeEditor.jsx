@@ -36,7 +36,7 @@ const RealTimeEditor = () => {
       theme: 'material-ocean',
       mode: 'javascript',
       
-    })
+    },[])
     
 
     const widget = document.createElement('span')
@@ -69,11 +69,7 @@ const RealTimeEditor = () => {
       console.log(roomId , " here in realtime in line 61 ")
     })
     
-    const mypeer = new Peer(undefined, {
-      path:'/peerjs',
-      host:'/',
-      port:'3002'
-    })
+    const mypeer = new Peer()
     mypeer.on('open', userid => {
       console.log('here at mypeer on')
       socket.emit('join-video-room', { roomId, userid})
@@ -112,6 +108,7 @@ const RealTimeEditor = () => {
     video: true,
     audio: true,
   }).then(stream => {
+    console.log('New person has joined your room line no:115 in realtimeeditor.js')
     myVideoStream = stream;
     addVideoStream(myvideo,stream)
     mypeer.on('call',call => {
@@ -139,12 +136,16 @@ const RealTimeEditor = () => {
       video.remove()
     })
   }
+
+
+
   function addVideoStream(video, stream){
     video.srcObject = stream
     video.addEventListener('loadedmetadata', ()=>{
       video.play()
-      videoGrid.append(video);
+      
     })
+    videoGrid.append(video);
     
   }
     return () => {
