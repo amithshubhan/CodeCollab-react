@@ -14,6 +14,9 @@ const { json } = require('body-parser')
 
 const { blueBright, greenBright, redBright } = require('chalk')
 
+
+const coder = {}
+
 const client = createClient()
 app.use(json())
 app.use(cors())
@@ -65,7 +68,7 @@ io.on('connection', (socket) => {
   })
   socket.on('CODE_CHANGED', async (code) => {
     const { roomId, username } = await client.hGetAll(socket.id)
-
+    coder[roomId] = code;
     // const todisplay = await client.hGet(`${roomId}:info`)
     // console.log(todisplay)
     const roomName = `ROOM:${roomId}`
@@ -88,6 +91,7 @@ io.on('connection', (socket) => {
     const roomName = `ROOM:${roomId}`
     socket.join(roomName)
     io.in(roomName).emit('ROOM:CONNECTION', users)
+    // socket.emit('CODE_CHANGED',coder[roomId]);
   })
 
   socket.on('disconnect', async () => {
